@@ -18,3 +18,23 @@ module.exports.registerUser = async (req,res) =>{
     res.cookie("token",token)
     res.status(200).json({token,user})
 }
+
+
+module.exports.loginUser = async (req,res)=>{
+
+    const {email , password } = req.body
+
+    const user = await userModel.findOne({email})
+    if(!user){
+        return res.status(401).json({message : "something went wrong"})
+    }
+    const comparePass = await user.comparePassword(password)
+    if(!comparePass){
+        return res.status(401).json({message : "something went wrong"})
+    }
+
+    const token = await user.generateAuthToken()
+    res.cookie("token",token)
+    res.status(200).json({token,user})
+
+}
