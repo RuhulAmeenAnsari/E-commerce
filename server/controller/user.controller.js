@@ -38,3 +38,7 @@ module.exports.loginUser = async (req,res)=>{
     res.status(200).json({token,user})
 
 }
+
+module.exports.userProfile=async(req,res)=>{
+    res.status(200).json({user:req.user})
+}
