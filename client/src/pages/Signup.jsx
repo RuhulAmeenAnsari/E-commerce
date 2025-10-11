@@ -1,10 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import google from "../assets/google.png";
 import { Link } from "react-router";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
-
+import axios from 'axios'
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../../utils/Firebase";
 const Signup = () => {
+
+  const [username, setusername] = useState("")
+  const [email, setemail] = useState("")
+  const [password, setpassword] = useState("")
+
+  const handleSubmit = async (e)=>{
+    e.preventDefault()
+    const user = {
+      username,email,password
+    }
+
+    const result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/signup`,user)
+    if(result.status ==200){
+      const data = result.data
+      const user = data.user
+      console.log(user);
+    } 
+    setusername("")
+    setemail("")
+    setpassword("")
+
+  }
+
+  const googleSignup = async()=>{
+    try {
+      const result = await signInWithPopup(auth,provider)
+    } catch (error) {
+      
+    }
+  }
+  
+
+
   const [show, setShow] = useState(false);
   return (
     <div className="w-[100vw] h-[100vh] bg-gradient-to-l from-[#1c1923] to-black flex flex-col items-center justify-start">
@@ -13,11 +48,11 @@ const Signup = () => {
         <span>Welcome to CartCraze, place your order </span>
       </div>
       <div className="max-w-[600px] w-[90%] h-[500px]  border-[1px] border-[#96969635] backdrop-blur-2xl rounded-lg shadow-lg flex items-center mt-3 justify-center">
-        <form
+        <form onSubmit={handleSubmit}
           className="w-[90%] h-[90%] flex flex-col items-center justify-start mt-14 gap-10  "
           action=""
         >
-          <div className="w-[90%] h-[50px] bg-[#426565cae] border-2 border-[#a9a3a335] text-white rounded-lg items-center flex justify-center gap-[10px] py-[20px] cursor-pointer">
+          <div onClick={googleSignup} className="w-[90%] h-[50px] bg-[#426565cae] border-2 border-[#a9a3a335] text-white rounded-lg items-center flex justify-center gap-[10px] py-[20px] cursor-pointer">
             <img className="h-[4vh] w-[20px]" src={google} alt="" /> Register
             with google
           </div>
@@ -31,6 +66,8 @@ const Signup = () => {
               className="w-[100%] h-[40px] border-[2px] border-[#96969635] backdrop:blur-sm placeholder-[#413f3fc7] shadow-lg bg-transparent px-[20px] font-semibold rounded-lg"
               placeholder="Username"
               name="username"
+              value={username}
+              onChange={(e)=>{setusername(e.target.value)}}
               required
               type="text"
             />
@@ -38,6 +75,8 @@ const Signup = () => {
               className="w-[100%] h-[40px] border-[2px] border-[#96969635] backdrop:blur-sm placeholder-[#413f3fc7] shadow-lg bg-transparent px-[20px] font-semibold rounded-lg"
               placeholder="Email"
               name="email"
+              value={email}
+              onChange={(e)=>{setemail(e.target.value)}}
               required
               type="email"
             />
@@ -45,6 +84,8 @@ const Signup = () => {
               className="w-[100%] h-[40px] border-[2px] relative border-[#96969635] backdrop:blur-sm placeholder-[#413f3fc7] shadow-lg bg-transparent px-[20px] font-semibold rounded-lg"
               placeholder="password"
               name="password"
+              value={password}
+              onChange={(e)=>{setpassword(e.target.value)}}
               required
               type={show ? "text" : "password"}
             />
