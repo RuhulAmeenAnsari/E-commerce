@@ -3,7 +3,8 @@ import google from "../assets/google.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import axios from "axios";
-
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../../utils/Firebase";
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -30,6 +31,23 @@ const Login = () => {
 
   }
 
+  const googleLogin = async()=>{
+    try {
+      const result = await signInWithPopup(auth,provider)
+      let user = result.user;
+      let username = user.displayName;
+      let email = user.email
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/googleLogin`,{username,email},{withCredentials:true})
+      if(res.status ==200){
+       console.log("Login successfully")
+       console.log(res);
+       navigate('/')
+      } 
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className="w-[100vw] h-[100vh] bg-gradient-to-l from-[#1c1923] to-black flex flex-col items-center justify-start">
       {/* Header */}
@@ -42,7 +60,7 @@ const Login = () => {
       <div className="max-w-[600px] w-[90%] h-[450px] border-[1px] border-[#96969635] backdrop-blur-2xl rounded-lg shadow-lg flex items-center mt-3 justify-center">
         <form onSubmit={handleSubmit} className="w-[90%] h-[90%] flex flex-col items-center justify-start mt-10 gap-10">
           {/* Google Login */}
-          <div className="w-[90%] h-[50px] bg-[#426565cae] border-2 border-[#a9a3a335] text-white rounded-lg flex items-center justify-center gap-[10px] py-[20px] cursor-pointer">
+          <div onClick={googleLogin} className="w-[90%] h-[50px] bg-[#426565cae] border-2 border-[#a9a3a335] text-white rounded-lg flex items-center justify-center gap-[10px] py-[20px] cursor-pointer">
             <img className="h-[4vh] w-[20px]" src={google} alt="Google" />
             Login with Google
           </div>

@@ -23,6 +23,7 @@ const Signup = () => {
       const data = result.data
       const user = data.user
       console.log(user);
+      navigate('/login')
     } 
     setusername("")
     setemail("")
@@ -33,8 +34,17 @@ const Signup = () => {
   const googleSignup = async()=>{
     try {
       const result = await signInWithPopup(auth,provider)
+      let user = result.user;
+      let username = user.displayName;
+      let email = user.email
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/googleSignUp`,{username,email},{withCredentials:true})
+      if(res.status ==200){
+       console.log("user created successfully")
+       console.log(res);
+       navigate('/login')
+      } 
     } catch (error) {
-      
+      console.log(error);
     }
   }
   

@@ -12,7 +12,10 @@ const ProductRoutes = require('./routes/product.routes.js')
 connectToDB()
 app.use(cookieParser())
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:5173",  // your frontend URL
+    credentials: true,                // allow credentials (cookies, auth headers)
+  }));
 app.use('/user', userRouter)
 app.use('/product', ProductRoutes)
 

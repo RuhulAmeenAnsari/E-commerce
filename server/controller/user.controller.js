@@ -42,3 +42,39 @@ module.exports.loginUser = async (req,res)=>{
 module.exports.userProfile=async(req,res)=>{
     res.status(200).json({user:req.user})
 }
+
+module.exports.googleSignup = async (req,res)=>{
+
+    try {
+        const {username , email} = req.body
+        let user = await userModel.findOne({email})
+        if(!user){
+         user = await userModel.create({username,email})
+        }
+        const token = await user.generateAuthToken()
+        res.cookie("token",token)
+        res.status(200).json({token,user})
+    } catch (error) {
+        console.log("something went wrong",error)
+        return res.status(500).json({error:"registration failed"})
+    }
+
+}
+
+module.exports.googleLogin = async (req,res)=>{
+
+    try {
+        const {username , email} = req.body
+        let user = await userModel.findOne({email})
+        if(!user){
+        return res.status(401).json({message : " user not found "})
+        }
+        const token = await user.generateAuthToken()
+        res.cookie("token",token)
+        res.status(200).json({token,user})
+    } catch (error) {
+        console.log("something went wrong",error)
+        return res.status(500).json({error:"login failed"})
+    }
+
+}
