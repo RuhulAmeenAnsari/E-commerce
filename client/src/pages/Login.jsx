@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import google from "../assets/google.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../utils/Firebase";
+import UserDataProvider, { UserContext } from "../context/UserContext";
 
 const Login = () => {
   const [show, setShow] = useState(false);
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
   const navigate = useNavigate()
+  const {user , setUser} = useContext(UserContext)
 
   const handleSubmit = async (e)=>{
     e.preventDefault()
@@ -18,14 +20,21 @@ const Login = () => {
       email,password
     }
 
-    const result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/login`,user)
-    if(result.status ==200){
-      const data = result.data
-      const user = data.user
-      console.log(user);
-     
-    } 
-    navigate('/')
+    try {
+      const result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/login`, user, { withCredentials: true },
+      );
+    
+      if (result.status === 200) {
+        const data = result.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token);
+        navigate('/');
+      }
+    } catch (error) {
+      console.log("Login failed:", error.response?.data || error.message);
+      alert("Invalid credentials, please try again!");
+    }
+    
     setemail("")
     setpassword("")
 
@@ -38,13 +47,16 @@ const Login = () => {
       let username = user.displayName;
       let email = user.email
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/googleLogin`,{username,email},{withCredentials:true})
-      if(res.status ==200){
-       console.log("Login successfully")
-       console.log(res);
-       navigate('/')
-      } 
+      if (res.status === 200 && res.data?.user && res.data?.token) {
+        const result = res.data
+        setUser(result.user);
+        localStorage.setItem("token", result.token);
+        navigate('/');
+      }
+      
     } catch (error) {
-      console.log(error);
+      console.error("Google login failed:", error.response?.data || error.message);
+      alert("Google login failed. Please try again.");
     }
   }
 

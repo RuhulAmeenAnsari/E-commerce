@@ -78,3 +78,13 @@ module.exports.googleLogin = async (req,res)=>{
     }
 
 }
+
+module.exports.logoutUser = async (req,res)=>{
+    try {
+        res.clearCookie('token')
+        res.status(200).json({message: "logout successfully"})
+    } catch (error) {
+        console.log("something went wrong",error)
+        return res.status(500).json({error:"logout error"})
+    }
+}

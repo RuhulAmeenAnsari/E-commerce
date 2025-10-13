@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import google from "../assets/google.png";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import axios from 'axios'
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../utils/Firebase";
 const Signup = () => {
-
+  const navigate = useNavigate()
   const [username, setusername] = useState("")
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
@@ -21,8 +21,9 @@ const Signup = () => {
     const result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/signup`,user)
     if(result.status ==200){
       const data = result.data
-      const user = data.user
-      console.log(user);
+      const token = (data.token);
+      console.log(token);
+      localStorage.setItem("token",token)
       navigate('/login')
     } 
     setusername("")

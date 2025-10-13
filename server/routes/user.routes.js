@@ -8,5 +8,6 @@ router.post('/login',userController.loginUser)
 router.post('/googleSignUp',userController.googleSignup)
 router.post('/googleLogin',userController.googleLogin)
 router.get('/profile',userAuthMiddleware,userController.userProfile)
+router.get('/logout',userController.logoutUser)
 
 module.exports = router
