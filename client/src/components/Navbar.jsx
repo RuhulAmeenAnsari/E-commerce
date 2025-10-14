@@ -6,12 +6,16 @@ import { IoIosLogIn } from "react-icons/io";
 import { CiLogout } from "react-icons/ci";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
+import { IoMdHome } from "react-icons/io";
+import { BsCollection } from "react-icons/bs";
+import { MdContacts } from "react-icons/md";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { user, setUser } = useContext(UserContext);
  const name  = (user.username);
+ const [setprofile, setsetprofile] = useState(true)
 
   useEffect(() => {
     if (token) {
@@ -33,8 +37,8 @@ const Navbar = () => {
 
   const menuItems = [
     { id: 1, title: "Home", link: "/" },
-    { id: 2, title: "Collection", link: "/shop" },
-    { id: 3, title: "About", link: "/deals" },
+    { id: 2, title: "Collection", link: "/collection" },
+    { id: 3, title: "About", link: "/about" },
     { id: 4, title: "Contact", link: "/contact" },
   ];
 
@@ -43,11 +47,21 @@ const Navbar = () => {
       {/* Logo */}
       <div>
         <img
-          className="h-[8vh] cursor-pointer"
+          className="md:h-[8vh] h-[5vh] cursor-pointer"
           src={cartcraze}
           onClick={() => navigate("/")}
           alt="CartCraze Logo"
         />
+      </div>
+      <div className="sm:hidden items-center bg-black/20 backdrop-blur-md border border-white/30 rounded-full px-3 py-1">
+        <input
+          type="text"
+          placeholder="Search products..."
+          className="bg-transparent outline-none text-white placeholder-gray-400 px-2 py-1 w-16 md:w-60"
+        />
+        <button className=" text-white  rounded-full hover:bg-orange-600 transition">
+          🔍
+        </button>
       </div>
 
       {/* Nav Links */}
@@ -64,7 +78,7 @@ const Navbar = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="hidden sm:flex items-center bg-black/20 backdrop-blur-md border border-white/30 rounded-full px-3 py-1">
+      <div className="hidden md:flex items-center bg-black/20 backdrop-blur-md border border-white/30 rounded-full px-3 py-1">
         <input
           type="text"
           placeholder="Search products..."
@@ -76,15 +90,33 @@ const Navbar = () => {
       </div>
 
       {/* Icons + Auth */}
-      <div className="flex items-center space-x-8 text-xl text-white/80">
-        <FaShoppingCart className="hover:text-orange-500 transition cursor-pointer" />
-        <FaUser
-          className="hover:text-orange-500 transition cursor-pointer"
+      <div className="flex items-center md:space-x-8 text-xl gap-3 text-white/80 " >
+        <FaUser 
+          className="hover:text-orange-500 transition relative cursor-pointer"
+          onClick={()=>setsetprofile(prev=>!prev)}
         />
+        {setprofile && <div className="sm:hidden absolute top-20 right-3" >
+        {token ? (
+            <button
+              onClick={handleLogout}
+              className="px-4 py-1  border border-orange-500 text-orange-500 rounded-full text-sm font-medium hover:bg-orange-500 hover:text-white transition flex items-center gap-1"
+            >
+              <CiLogout size={18} /> Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="px-4 py-1 border border-white/30 text-white rounded-full text-sm font-medium hover:bg-white/20 transition flex items-center gap-1"
+            >
+              <IoIosLogIn size={18} /> Login
+            </Link>
+          )}
 
-        {token && <div className="w-32 text-white">{name}</div>}
+          </div>}
 
-        <div className="flex items-center space-x-3 ml-2">
+        {token && <div className=" text-white">{name}</div>}
+        <FaShoppingCart className="hover:text-orange-500 hidden md:block transition cursor-pointer" />
+        <div className="hidden  md:flex items-center space-x-3 ml-2">
           {token ? (
             <button
               onClick={handleLogout}
@@ -100,7 +132,19 @@ const Navbar = () => {
               <IoIosLogIn size={18} /> Login
             </Link>
           )}
+
         </div>
+        <div className="absolute top-157  list-none gap-8 left-0 w-full bg-[#1a1a1a]/90 border-t border-white/10 backdrop-blur-lg flex justify-evenly items-center py-2 text-white text-sm sm:hidden z-50">
+       
+          <Link to={'/'} className="text-2xl"><IoMdHome /></Link>
+          <Link to={'/collection'} className="text-2xl"><BsCollection /></Link>
+          <Link to={'/contacts'} className="text-2xl"><MdContacts /></Link>
+          <Link to={'/cart'} className="text-2xl"><FaShoppingCart /></Link>
+    
+        
+      
+     
+      </div>
       </div>
     </nav>
   );
