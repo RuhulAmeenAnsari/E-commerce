@@ -11,7 +11,7 @@ const AdminContext = ({children}) => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/getAdmin`,{withCredentials:true})
         setadminData(res.data)
-        // console.log(res.data)
+        console.log(res.data)
         } catch (error) {
             setadminData(null)
             console.log(`get admin frontend error ${error}`)

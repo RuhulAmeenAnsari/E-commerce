@@ -25,6 +25,7 @@ const AdminLogin = () => {
         localStorage.setItem("adminToken", res.data.token);
         alert("Admin login successful!");
         getAdmin()
+        console.log(adminData)
         navigate("/admin-dashboard");
       }
     } catch (error) {
