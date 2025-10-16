@@ -1,6 +1,6 @@
-const mongoose = require("mongoose")
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+import mongoose  from "mongoose" 
+import jwt  from 'jsonwebtoken'
+import bcrypt  from 'bcrypt' 
 const userSchema = mongoose.Schema({
 
 
@@ -36,4 +36,5 @@ userSchema.statics.hashpassword = async (password) => {
     return hashedPassword
 }
 
-module.exports = mongoose.model.user || mongoose.model('user', userSchema)
+const user = mongoose.model.user || mongoose.model('user', userSchema)
+export default user

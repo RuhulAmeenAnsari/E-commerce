@@ -1,7 +1,8 @@
-const express = require('express')
-const router = express.Router()
-const userController = require('../controller/user.controller')
-const { userAuthMiddleware } = require('../middleware/auth.middleware')
+import express from 'express';
+import * as userController from '../controller/user.controller.js';
+import { userAuthMiddleware } from '../middleware/auth.middleware.js';
+
+const router = express.Router();
 
 router.post('/signup',userController.registerUser)
 router.post('/login',userController.loginUser)
@@ -10,4 +11,4 @@ router.post('/googleLogin',userController.googleLogin)
 router.get('/profile',userAuthMiddleware,userController.userProfile)
 router.get('/logout',userController.logoutUser)
 
-module.exports = router
+export default router

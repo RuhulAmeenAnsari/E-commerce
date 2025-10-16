@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Nav from "../components/Nav";
 import Sidebar from "../components/Sidebar";
 import uploadImage from "../assets/uploadImg.png";
+import axios from "axios";
 
 const Add = () => {
   let [image1, setImage1] = useState(false);
@@ -16,7 +17,49 @@ const Add = () => {
   const [bestseller, setbestseller] = useState(false);
   const [sizes, setsizes] = useState([]);
 
-  const handleAddProduct = async (e) => {};
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
+    try {
+      let formData = new FormData();
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("category", category);
+      formData.append("subCategory", subCategory); // string
+      formData.append("bestseller", bestseller);
+      formData.append("sizes", JSON.stringify(sizes));
+      formData.append("image1", image1);
+      formData.append("image2", image2);
+      formData.append("image3", image3);
+      formData.append("image4", image4);
+  
+      let result = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/product/addproduct`,
+        formData,
+        { withCredentials: true }
+      );
+  
+      console.log(result.data);
+  
+      if (result.data) {
+        // Reset form
+        setname("");
+        setDescription("");
+        setImage1(false);
+        setImage2(false);
+        setImage3(false);
+        setImage4(false);
+        setprice("");
+        setbestseller(false);
+        setcategory("Men");
+        setsubCategory("Top-picks");
+        setsizes([]);
+      }
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    }
+  };
+  
   return (
     <div className=" w-[100vw] min-h-[100vh] bg-gradient-to-l from-[#1c1923] to-black overflow-x-hidden text-white relative">
       <Nav />
@@ -24,6 +67,7 @@ const Add = () => {
 
       <div className="w-[85%] h-[100%] flex items-center justify-start overflow-x-hidden absolute right-0 bottom-[5%]">
         <form
+          onSubmit={handleAddProduct}
           className="w-[100%] md:w-[90%] h-[100%] mt-[70px] flex flex-col gap-[30px] py-[60px] px-[30px] md:px-[60px]"
           action=""
         >
@@ -188,6 +232,7 @@ const Add = () => {
               className="w-[25px] h-[25px] cursor-pointer"
             />
             <label
+              onChange={ ()=>setbestseller(prev=>!prev)}
               htmlFor="checkbox"
               className="text-[18px] md:text-[22px] font-semibold"
             >

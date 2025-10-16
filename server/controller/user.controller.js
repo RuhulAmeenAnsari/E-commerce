@@ -1,6 +1,6 @@
-const userModel = require('../models/user.model')
+import userModel from '../models/user.model.js' 
 
-module.exports.registerUser = async (req,res) =>{
+export const registerUser = async (req,res) =>{
     const {username , email , password } = req.body
     const isAlreadyRegistered = await userModel.findOne({email})
     if(isAlreadyRegistered){
@@ -20,7 +20,7 @@ module.exports.registerUser = async (req,res) =>{
 }
 
 
-module.exports.loginUser = async (req,res)=>{
+export const loginUser = async (req,res)=>{
 
     const {email , password } = req.body
 
@@ -38,12 +38,12 @@ module.exports.loginUser = async (req,res)=>{
     res.status(200).json({token,user})
 
 }
-
-module.exports.userProfile=async(req,res)=>{
+export const userProfile=async(req,res)=>{
     res.status(200).json({user:req.user})
 }
 
-module.exports.googleSignup = async (req,res)=>{
+
+export const googleSignup = async (req,res)=>{
 
     try {
         const {username , email} = req.body
@@ -61,7 +61,7 @@ module.exports.googleSignup = async (req,res)=>{
 
 }
 
-module.exports.googleLogin = async (req,res)=>{
+export const googleLogin = async (req,res)=>{
 
     try {
         const {username , email} = req.body
@@ -79,7 +79,7 @@ module.exports.googleLogin = async (req,res)=>{
 
 }
 
-module.exports.logoutUser = async (req,res)=>{
+export const logoutUser = async (req,res)=>{
     try {
         res.clearCookie('token')
         res.status(200).json({message: "logout successfully"})

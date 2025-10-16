@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken')
-const userModel = require('../models/user.model')
+import jwt from 'jsonwebtoken'
+import userModel from'../models/user.model.js'
 
 
-module.exports.userAuthMiddleware = async (req, res, next) => {
+export const userAuthMiddleware = async (req, res, next) => {
 
     try {
         const token = req.cookies.token || req.headers.authorization?.split(' ')[0]

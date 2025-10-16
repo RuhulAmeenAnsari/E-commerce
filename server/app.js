@@ -1,25 +1,34 @@
-const express = require('express')
-const app = express()
-const cors = require('cors')
-const dotenv = require('dotenv')
-dotenv.config()
-const connectToDB = require('./config/db.js')
-const userRouter = require('./routes/user.routes.js')
-const cookieParser = require('cookie-parser')
-const ProductRoutes = require('./routes/product.routes.js')
-const adminRoutes = require('./routes/admin.routes.js')
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 
-connectToDB()
-app.use(cookieParser())
-app.use(express.json())
-app.use(cors({
-    origin: ["http://localhost:5173","http://localhost:5174"],  
-    credentials: true,                
-  }));
-app.use('/user', userRouter)
-app.use('/product', ProductRoutes)
-app.use('/admin',adminRoutes)
+import connectToDB from './config/db.js';
+import userRouter from './routes/user.routes.js';
+import productRoutes from './routes/product.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
+dotenv.config();
 
+const app = express();
 
-module.exports = app
+// Connect to database
+connectToDB();
+
+// Middleware
+app.use(cookieParser());
+app.use(express.json());
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    credentials: true,
+  })
+);
+
+// Routes
+app.use('/user', userRouter);
+app.use('/product', productRoutes);
+app.use('/admin', adminRoutes);
+
+// ✅ Export as ES module
+export default app;

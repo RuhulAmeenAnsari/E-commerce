@@ -1,14 +1,24 @@
-const express = require('express')
-const router = express.Router()
-const productController = require('../controller/product.controller')
-const { userAuthMiddleware } = require('../middleware/auth.middleware')
-const { default: upload } = require('../middleware/multer')
-router.post('/addproduct', upload.fields([
-  { name: "image1", maxCount: 1 }, 
-  { name: "image2", maxCount: 1 },
-  { name: "image3", maxCount: 1 },
-  { name: "image4", maxCount: 1 }]), productController.addProduct)
-router.get('/allProducts', userAuthMiddleware, productController.getAllProducts)
+import express from 'express';
+import * as productController from '../controller/product.controller.js';
+
+import upload from '../middleware/multer.js';
+
+const router = express.Router();
 
 
-module.exports = router
+router.post(
+  '/addproduct',
+  upload.fields([
+    { name: 'image1', maxCount: 1 },
+    { name: 'image2', maxCount: 1 },
+    { name: 'image3', maxCount: 1 },
+    { name: 'image4', maxCount: 1 },
+  ]),
+  productController.addProduct
+);
+
+router.get('/allProducts', productController.getAllProducts);
+router.post('/delete/:id', productController.reomveProduct);
+
+
+export default router;
