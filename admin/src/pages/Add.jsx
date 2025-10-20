@@ -14,7 +14,7 @@ const Add = () => {
   const [category, setcategory] = useState("Men");
   const [price, setprice] = useState("");
   const [subCategory, setsubCategory] = useState("Top-picks");
-  const [bestseller, setbestseller] = useState(false);
+  const [bestSeller, setbestSeller] = useState(false);
   const [sizes, setsizes] = useState([]);
 
   const handleAddProduct = async (e) => {
@@ -26,7 +26,7 @@ const Add = () => {
       formData.append("price", price);
       formData.append("category", category);
       formData.append("subCategory", subCategory); // string
-      formData.append("bestseller", bestseller);
+      formData.append("bestSeller", bestSeller);
       formData.append("sizes", JSON.stringify(sizes));
       formData.append("image1", image1);
       formData.append("image2", image2);
@@ -50,7 +50,7 @@ const Add = () => {
         setImage3(false);
         setImage4(false);
         setprice("");
-        setbestseller(false);
+        setbestSeller(false);
         setcategory("Men");
         setsubCategory("Top-picks");
         setsizes([]);
@@ -232,7 +232,7 @@ const Add = () => {
               className="w-[25px] h-[25px] cursor-pointer"
             />
             <label
-              onChange={ ()=>setbestseller(prev=>!prev)}
+              onChange={ ()=>setbestSeller(prev=>!prev)}
               htmlFor="checkbox"
               className="text-[18px] md:text-[22px] font-semibold"
             >

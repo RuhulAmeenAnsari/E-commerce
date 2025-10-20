@@ -1,97 +1,184 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-
+import React, { useContext, useEffect, useState } from "react";
+import { FaAngleDown } from "react-icons/fa";
+import { FaAngleUp } from "react-icons/fa";
+import Title from "../components/Title.jsx";
+import { shopDataContext } from "../context/ShopContext.jsx";
+import Card from "../components/Card.jsx";
 const Collections = () => {
-  const [collections, setCollections] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [showFilter, setshowFilter] = useState(false);
+  let { products } = useContext(shopDataContext);
+  products = products?.products || [];
 
-  const fetchCollections = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/product/allProducts`
-      );
-      setCollections(res.data.products || res.data || []);
-    } catch (error) {
-      console.error("Error fetching collections:", error);
-    } finally {
-      setLoading(false);
+  const [filterProducts, setfilterProducts] = useState([]);
+  const [category, setcategory] = useState([]);
+  const [subCategory, setsubCategory] = useState([]);
+  const toggleCategory = (e) => {
+    if (category.includes(e.target.value)) {
+      setcategory((prev) => prev.filter((item) => item !== e.target.value));
+    } else {
+      setcategory((prev) => [...prev, e.target.value]);
+    }
+  };
+  const toggleSubCategory = (e) => {
+    if (subCategory.includes(e.target.value)) {
+      setsubCategory((prev) => prev.filter((item) => item !== e.target.value));
+    } else {
+      setsubCategory((prev) => [...prev, e.target.value]);
     }
   };
 
+  const [sortType, setsortType] = useState("relavent");
+
+  const applyFilter = () => {
+    let productCopy = [...products];
+    if (category.length > 0) {
+      productCopy = productCopy.filter((item) =>
+        category.includes(item.category)
+      );
+    }
+    if (subCategory.length > 0) {
+      productCopy = productCopy.filter((item) =>
+        subCategory.includes(item.subCategory)
+      );
+    }
+    setfilterProducts(productCopy);
+  };
+
   useEffect(() => {
-    fetchCollections();
-  }, []);
+    applyFilter();
+  }, [category, subCategory]);
+
+  useEffect(() => {
+    setfilterProducts(products);
+  }, [products]);
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 text-gray-900 py-10 px-4 sm:px-8 md:px-16">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-          Explore Collections
-        </h1>
-        <div className="mt-4 sm:mt-0">
-          <select className="px-4 py-2 border rounded-lg shadow-sm text-gray-700 focus:ring-2 focus:ring-orange-500 outline-none">
-            <option value="">Sort By</option>
-            <option value="priceLow">Price: Low to High</option>
-            <option value="priceHigh">Price: High to Low</option>
-            <option value="newest">Newest First</option>
-          </select>
+    <div className="w-[100vw] min-h-[100vh] bg-gradient-to-l from-[#1c1923] to-black flex items-start flex-col md:flex-row justify-start pt-[70px] overflow-x-hidden z-[2]">
+      <div
+        className={`md:w-[30vw] lg:w-[20vw] w-[100vw] md:min-h-[100vh] p-[20px] border-r-[1px] border-gray-400 text-[#aaf5faj] lg:fixed ${
+          showFilter ? "h-[60vh] " : "h-[8vh]"
+        }`}
+      >
+        <p
+          className="text-[25px] text-white font-semibold flex gap-[5px] items-center justify-start hover:cursor-pointer"
+          onClick={() => setshowFilter((prev) => !prev)}
+        >
+          FILTERS{" "}
+          <span>
+            {showFilter == true ? (
+              <FaAngleUp className="md:hidden" />
+            ) : (
+              <FaAngleDown className="md:hidden" />
+            )}
+          </span>
+        </p>
+        <div
+          className={`border-[2px] border-[#dedcdc] pl-5 py-3 mt-6 rounded-md bg-gray-900/30 ${
+            showFilter ? "" : "hidden md:block"
+          }`}
+        >
+          <p className={` text-[18px] text-white `}>CATEGORIES</p>
+          <div className="w-[230px] h-[120px] flex items-start justify-center gap-[10px] flex-col ">
+            <p className="flex items-center justify-center gap-[10px] text-white text-[16px] font-light">
+              <input
+                type="checkbox"
+                onChange={toggleCategory}
+                value={"Men"}
+                className="w-3"
+              />{" "}
+              Men
+            </p>
+            <p className="flex items-center justify-center gap-[10px] text-white text-[16px] font-light">
+              <input
+                type="checkbox"
+                onChange={toggleCategory}
+                value={"Women"}
+                className="w-3"
+              />{" "}
+              Women
+            </p>
+            <p className="flex items-center justify-center gap-[10px] text-white text-[16px] font-light">
+              <input
+                type="checkbox"
+                onChange={toggleCategory}
+                value={"Kids"}
+                className="w-3"
+              />{" "}
+              Kids
+            </p>
+          </div>
+        </div>
+        <div
+          className={`border-[2px] border-[#dedcdc] pl-5 py-3 mt-6 rounded-md bg-gray-900/30 ${
+            showFilter ? "" : "hidden md:block"
+          }`}
+        >
+          <p className=" text-[18px] text-white">SUB-CATEGORIES</p>
+          <div className="w-[230px] h-[120px] flex items-start justify-center gap-[10px] flex-col ">
+            <p className="flex items-center justify-center gap-[10px] text-white text-[16px] font-light">
+              <input
+                type="checkbox"
+                onChange={toggleSubCategory}
+                value={"Top-picks"}
+                className="w-3"
+              />{" "}
+              Top-picks
+            </p>
+            <p className="flex items-center justify-center gap-[10px] text-white text-[16px] font-light">
+              <input
+                type="checkbox"
+                onChange={toggleSubCategory}
+                value={"SummerWear"}
+                className="w-3"
+              />{" "}
+              Summer Wear
+            </p>
+            <p className="flex items-center justify-center gap-[10px] text-white text-[16px] font-light">
+              <input
+                type="checkbox"
+                onChange={toggleSubCategory}
+                value={"WinterWear"}
+                className="w-3"
+              />{" "}
+              Winter Wear
+            </p>
+          </div>
         </div>
       </div>
-
-      {/* Loading State */}
-      {loading ? (
-        <p className="text-center text-gray-500 text-lg mt-20">Loading collections...</p>
-      ) : collections.length === 0 ? (
-        <div className="flex flex-col items-center justify-center mt-20">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/4076/4076500.png"
-            alt="No Items"
-            className="w-[150px] mb-4 opacity-60"
-          />
-          <h2 className="text-xl font-semibold">No Collections Found</h2>
+      <div className="lg:pl-[20%] md:py-[10px]">
+        <div className=" md:w-[80vw] w-[100vw] p-[20px] flex justify-between flex-col lg:flex-row lg:px-[50px]">
+          <Title text1={"ALL"} text2={"COLLECTION"} />
+          <select
+            className="bg-gray-700 w-[60%] md:w-[200px] h-[50px] px-[10px] text-white rounded-lg hover:border-2 hover:border-r-orange-400"
+            name=""
+            id=""
+          >
+            <option className="w-[100%] h-[100%] " value="relavent">
+              Sort By : Relavent
+            </option>
+            <option className="w-[100%] h-[100%] " value="low-high">
+              Sort By : Low to High
+            </option>
+            <option className="w-[100%] h-[100%] " value="high-low">
+              Sort By : High to Low
+            </option>
+          </select>
         </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-          {collections.map((item) => (
-            <div
-              key={item._id}
-              className="bg-white rounded-xl shadow hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer group"
-            >
-              <div className="relative">
-                <img
-                  src={item.image1?.url || item.image1 || "https://via.placeholder.com/300"}
-                  alt={item.name}
-                  className="w-full h-[200px] object-contain group-hover:scale-105 transition-transform duration-300"
-                />
-                {item.bestSeller && (
-                  <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-md font-medium">
-                    Bestseller
-                  </span>
-                )}
-              </div>
-              <div className="p-3">
-                <h3 className="font-semibold text-gray-800 text-[15px] truncate">
-                  {item.name}
-                </h3>
-                <p className="text-sm text-gray-500 truncate">
-                  {item.category} • {item.subCategory}
-                </p>
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-orange-500 font-bold text-lg">₹{item.price}</p>
-                  <button className="text-sm text-blue-600 hover:underline">
-                    View
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="lg:w-[80vw} md:w-[60vw] w-[100vw] min-h-[70vh] flex items-center text-white justify-center flex-wrap gap-[30px]">
+          {Array.isArray(filterProducts) &&
+            filterProducts.map((item, index) => (
+              <Card
+                key={index}
+                id={item._id}
+                name={item.name}
+                price={item.price}
+                image={item.image1}
+              />
+            ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
 export default Collections;
-
