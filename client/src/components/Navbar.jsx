@@ -9,11 +9,13 @@ import { UserContext } from "../context/UserContext";
 import { IoMdHome } from "react-icons/io";
 import { BsCollection } from "react-icons/bs";
 import { MdContacts } from "react-icons/md";
+import  { shopDataContext } from "../context/ShopContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { user } = useContext(UserContext);
+  const {search, setsearch} = useContext(shopDataContext)
   const name = user?.username || "";
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
@@ -60,6 +62,8 @@ const Navbar = () => {
             type="text"
             placeholder="Search products..."
             className="bg-transparent outline-none text-white placeholder-gray-400 px-2 py-1 w-full"
+            onChange={(e)=>{setsearch(e.target.value)} }
+            value={search}
           />
           <button className="bg-orange-500 text-white px-3 py-1 rounded-full hover:bg-orange-600 transition">
             🔍

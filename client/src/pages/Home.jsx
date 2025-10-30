@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Hero from "../components/Hero";
 import Background from "../components/Background";
 import Products from "./Products";
+import Ourpolicy from "../components/Ourpolicy";
+import Footer from "../components/Footer";
 
 const Home = () => {
   let heroData = [
@@ -30,6 +32,8 @@ const Home = () => {
         />
       </div>
       <Products/>
+      <Ourpolicy/>
+      <Footer/>
     </div>
   );
 };

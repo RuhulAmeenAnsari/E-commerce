@@ -6,6 +6,7 @@ function ShopContext({children}) {
     const [products, setProducts] = useState([])
     let currency = '₹'
     let delivery_fee = 40
+    const [search, setsearch] = useState("")
 
     const getProducts = async()=>{
         try {
@@ -23,7 +24,7 @@ function ShopContext({children}) {
 
 
     let value = {
-products,getProducts,delivery_fee,currency
+products,getProducts,delivery_fee,currency,search, setsearch
     }
   return (
     <div>

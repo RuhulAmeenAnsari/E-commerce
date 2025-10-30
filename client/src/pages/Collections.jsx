@@ -6,14 +6,14 @@ import Card from "../components/Card.jsx";
 
 const Collections = () => {
   const [showFilter, setShowFilter] = useState(false);
-  let { products } = useContext(shopDataContext);
+  let { products,search , setsearch } = useContext(shopDataContext);
   products = products?.products || [];
 
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState("relavent");
-
+  
   // toggle category filters
   const toggleCategory = (e) => {
     const value = e.target.value;
@@ -33,6 +33,9 @@ const Collections = () => {
   // filter products
   const applyFilter = () => {
     let filtered = [...products];
+    if(search){
+      filtered = filtered.filter(item=>item.name.toLowerCase().includes(search.toLowerCase()))
+    }
     if (category.length > 0) {
       filtered = filtered.filter((item) => category.includes(item.category));
     }
@@ -52,19 +55,19 @@ const Collections = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, sortType]);
+  }, [category, subCategory, sortType,search]);
 
   useEffect(() => {
     setFilterProducts(products);
   }, [products]);
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-l from-[#141218] to-black flex flex-col md:flex-row justify-start pt-[70px] overflow-x-hidden text-white">
+    <div className="w-full min-h-screen bg-gradient-to-l pb-[100px] from-[#141218] to-black flex flex-col md:flex-row justify-start pt-[70px] overflow-x-hidden text-white">
       
       {/* ---------- FILTER SIDEBAR ---------- */}
       <div
         className={`md:w-[25vw] lg:w-[18vw] w-full p-6 border-r border-gray-700 
-          bg-[#16141b]/60 backdrop-blur-md md:min-h-screen transition-all duration-500
+          bg-[#16141b]/60 backdrop-blur-md md:min-h-screen transition-all duration-500 
           ${showFilter ? "h-auto pb-8" : "h-[70px] md:h-auto"} md:static fixed top-[70px] left-0 z-20`}
       >
         <p
@@ -131,7 +134,7 @@ const Collections = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center ">
           {filterProducts.length > 0 ? (
             filterProducts.map((item, index) => (
               <Card
